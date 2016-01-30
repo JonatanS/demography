@@ -165,7 +165,7 @@ app.controller('HomeCtrl', function($scope) {
                 .dimension(userDimension)
                 .group(userGroup)
                 .elasticY(true)
-                .centerBar(true)
+                .centerBar(false)
                 .x(d3.scale.ordinal())
                 .xUnits(dc.units.ordinal)
                 .renderHorizontalGridLines(true)
