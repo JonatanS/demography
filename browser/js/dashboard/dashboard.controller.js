@@ -10,7 +10,10 @@ app.controller('DashboardCtrl', function ($scope, $timeout, GraphService){
             enabled: false
         },
         resizable:{
-            enabled: false
+            enabled: false,
+            stop: function(a,b,c){  //On resize stop, this call back fires (relabel a,b,c)
+                GraphService.resize(c.id);
+            }
             //handles: ['n', 'e', 's', 'w', 'se', 'sw']
         },
         maxSizeX: 6, // maximum column width of an item
