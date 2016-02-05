@@ -15,20 +15,23 @@ app.service('GraphService', function() {
     var charts = {}; //Object to store all instances of chart to resize/edit specific chart
 
     this.populateCharts = function(widgetArr) {
+        return;
         widgetArr.forEach(function(widgetObj) {
             var chartObj = widgetObj.chartObject;
             if (chartObj) self.create(chartObj.id, chartObj.chartType, chartObj.xAxis, chartObj.yAxis, chartObj.groupType, chartObj.chartOptions)
         })
     }
 
-    this.create = function(id, chartType, xAxis, yAxis, groupType, chartOptions) {
+    this.create = function(element, id, chartType, xAxis, yAxis, groupType, chartOptions,chartSize) {
+
+    // this.create = function(id, chartType, xAxis, yAxis, groupType, chartOptions) {
         chartOptions = {}; //initialize for now to be empty, users will eventually submit this
         //Gets called after data load, accepts array of chartObjects
-        var chartContainer = $('#widget-container-' + id + '> .box-content > .widget-content-container')[0];
-        var chartWidth = chartContainer.offsetWidth;
-        var chartHeight = chartContainer.offsetHeight;
+        var chartContainer = element;
+        var chartWidth = chartSize.width;
+        var chartHeight = chartSize.height;
         var chartRadius = chartWidth < chartHeight ? chartWidth / 2 : chartHeight / 2;
-
+        console.log("ARGS: ",arguments)
         var chartObj; //Used for storing all chart options
         var xAxisIsNumber; //Checks if the xAxis is number, and if it needs to be linear or ordinal
 
@@ -55,8 +58,11 @@ app.service('GraphService', function() {
             });
         }
 
-
-
+        // var grp = dim.group().reduceSum(function(d) {
+        //     return d.HR;
+        // })
+        //var chart = dc[chartType](chartContainer);
+        console.log(element)
         if (chartType === "pieChart") {
 
             chartObj = makePieChartObject(chartOptions);
@@ -117,7 +123,9 @@ app.service('GraphService', function() {
             chartOptions: chartOptions
         };
 
+        console.log('chartObj: ',chartObj)
         createChart(id, chartObj)
+
         return charts['chart' + id];
     };
 
@@ -171,10 +179,15 @@ app.service('GraphService', function() {
     //Function that takes chartId and renders it with all options
     function createChart(id, chartOptions) {
         var chart = charts['chart' + id].chart;
+        console.log("CHART",chart)
         var keys = Object.keys(chartOptions);
         //debugger;
         keys.forEach(function(key) {
-            //console.log(key, ":", chartOptions[key])
+            console.log("KEY:",key)
+            console.log("val:",chartOptions[key])
+
+            chart[key](chartOptions[key])
+
             if(key==="on"){
                 chart[key].apply(null,chartOptions[key])
             }else{

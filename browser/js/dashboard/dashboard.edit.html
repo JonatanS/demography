@@ -7,31 +7,9 @@
 </div>
 
 <div gridster="gridsterOptions">
-    <ul>
-        <li gridster-item="widget" ng-repeat="widget in dashboard.widgets">
-            <div class="box" ng-controller="WidgetCtrl" ng-attr-id="{{ 'widget-container-' + widget.id }}">
-                <div class="box-header">
-                    <h4>{{ widget.title }}</h4>
-                    <div ng-show="true" toggle-class="whatever" class="box-header-btns pull-right">
-                        <a title="settings" ng-click="openSettings(widget, dataset._id)"><i class="glyphicon glyphicon-cog"></i></a>
-                        <a title="Remove widget" ng-click="remove(widget)"><i class="glyphicon glyphicon-trash"></i></a>
-                    </div>
-                </div>
-                <div class="box-content">
-                    <div class="new-widget-selector" ng-hide="noGraph(widget)">
-                        <a title="new bar chart" role="button" ng-click="openSettings(widget, dashboard.dataset._id,'barChart')"><i class="material-icons">insert_chart</i></a>
-                        <a title="new row chart" role="button" ng-click="openSettings(widget, dashboard.dataset._id,'rowChart')"><i class="material-icons gly-rotate-90">insert_chart</i></a>
-                        <a title="new pie chart" role="button" ng-click="openSettings(widget, dashboard.dataset._id,'pieChart')"><i class="material-icons">donut_small</i></a>
-                        <a title="new line chart" role="button" ng-click="openSettings(widget, dashboard.dataset._id,'lineChart')"><i class="material-icons">timeline</i></a>
-                        <a title="new table chart" role="button" ng-click="openSettings(widget, dashboard.dataset._id,'dataTable')"><i class="material-icons">grid_on</i></a>
-                        <a title="new text panel" role="button" ng-click="createDatacountWidget(widget, dashboard.dataset._id)" disabled><i class="material-icons">looks_one</i></a>
-                        <a title="new text panel" role="button" ng-click="openSettings(widget, dashboard.dataset._id,'text')" disabled><i class="material-icons">font_download</i></a>
-                    </div>
-                    <div class="widget-content-container"></div>
-                </div>
-            </div>
-        </li>
-    </ul>
+    <div>
+        <widget-view ng-repeat="widget in dashboard.widgets" widget="widget" dataset="dataset" dashboard="dashboard"></widget-view>
+    </div>
 </div>
 <footer class="footer">
     <div class="row">

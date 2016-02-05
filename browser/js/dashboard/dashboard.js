@@ -61,13 +61,14 @@ app.controller('DashboardCtrl', function (currentDataset, currentDashboard, logg
             handle: '.box-header',    // optional if you only want a specific element to be the drag handle
             enabled: true
         },
+        rowHeight: 'match',
         resizable:{
             enabled: true,
             stop: function(a,b,c){  //On resize stop, this call back fires (relabel a,b,c)
                 GraphService.resize(c.id);
                 //Probably want to pass in the widget size vs finding size inside of the function
-            }
-            //handles: ['n', 'e', 's', 'w', 'se', 'sw']
+            },
+            handles: ['s', 'w', 'se', 'sw']
         },
         maxSizeX: 6, // maximum column width of an item
         minSizeX: 2, // minimum column width of an item
