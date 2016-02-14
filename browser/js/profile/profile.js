@@ -69,29 +69,29 @@ app.controller('ProfileCtrl', function($scope, $state, $uibModal, $timeout, logg
         });
     };
 
-    // Function to open up the modal for creating a dashboard
-    $scope.openDashboardSettings = function (user, userDatasets, currentDashboard = null) {
-        // If the user tries to create a dashboard without a dataset, prompt them to upload one
-        if ($scope.userDatasets.length === 0) $scope.tellUserToCreateDataset = true;
-        else {
-            $uibModal.open({
-                scope: $scope,
-                templateUrl: 'js/profile/profile-dashboards.settings.html',
-                controller: 'ProfileDashboardsSettingsCtrl',
-                resolve: {
-                    user: function() {
-                        return user;
-                    },
-                    userDatasets: function() {
-                        return userDatasets;
-                    },
-                currentDashboard: function() {
-                    return currentDashboard;
-                }
-                }
-            });
-        }
-    };
+    // // Function to open up the modal for creating a dashboard
+    // $scope.openDashboardSettings = function (user, userDatasets, currentDashboard = null) {
+    //     // If the user tries to create a dashboard without a dataset, prompt them to upload one
+    //     if ($scope.userDatasets.length === 0) $scope.tellUserToCreateDataset = true;
+    //     else {
+    //         $uibModal.open({
+    //             scope: $scope,
+    //             templateUrl: 'js/profile/profile-dashboards.settings.html',
+    //             controller: 'ProfileDashboardsSettingsCtrl',
+    //             resolve: {
+    //                 user: function() {
+    //                     return user;
+    //                 },
+    //                 userDatasets: function() {
+    //                     return userDatasets;
+    //                 },
+    //             currentDashboard: function() {
+    //                 return currentDashboard;
+    //             }
+    //             }
+    //         });
+    //     }
+    // };
 
     $scope.removeDataset = function(dataset) {
         DatasetFactory.delete(dataset)
@@ -126,16 +126,16 @@ app.controller('ProfileCtrl', function($scope, $state, $uibModal, $timeout, logg
         .then(null, console.error)
     };
 
-    $scope.removeDashboard = function(dashboard) {
-        DashboardFactory.delete(dashboard)
-        .then(deletedDashboard => {
-            var userDashboardIndex = $scope.userDashboards.findIndex(userDashboard => {
-                return userDashboard._id === deletedDashboard._id;
-            });
-            $scope.userDashboards.splice(userDashboardIndex, 1);
-        })
-        .then(null, console.error);
-    };
+    // $scope.removeDashboard = function(dashboard) {
+    //     DashboardFactory.delete(dashboard)
+    //     .then(deletedDashboard => {
+    //         var userDashboardIndex = $scope.userDashboards.findIndex(userDashboard => {
+    //             return userDashboard._id === deletedDashboard._id;
+    //         });
+    //         $scope.userDashboards.splice(userDashboardIndex, 1);
+    //     })
+    //     .then(null, console.error);
+    // };
 
     $scope.apiKey = {
         show: false

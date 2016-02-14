@@ -18,7 +18,7 @@
     }
 }
 
-.profile-dashboard {
+/*.profile-dashboard {
     @include clearfix;
     background-color: #222222;
     box-shadow: 3px 4px 5px 1px #6b6b6b;
@@ -29,6 +29,7 @@
         margin-top: 20px;
     }
     img {
+        position: relative;
         display: block;
         margin-left: auto;
         margin-right: auto;
@@ -44,6 +45,56 @@
     .dashboard-description {
         font-size: 14px;
         color: #dddddd;
+    }
+    .dashboard-last-updated {
+        font-size: 13px;
+        color: rgb(136, 136, 136);
+    }
+
+    i {
+        margin-right: 8px;
+    }
+    button {
+        border-radius: 5px;
+        margin-top: 10px;
+        margin-bottom: 30px;
+        margin-right: 10px;
+        display: inline-block;
+        width: 175px;
+        text-align: left;
+    }
+}
+*/
+
+
+.dashboard-entry {
+    @include clearfix;
+    background-color: #dddddd;
+    box-shadow: 3px 4px 5px 1px #6b6b6b;
+    border-radius: 5px;
+    padding-left: 30px;
+    padding-right: 30px;
+    cursor: pointer;
+    .container {
+        margin-top: 20px;
+    }
+    img {
+        position: relative;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        width: 100%;
+    }
+    .dashboard-title {
+        padding-top: 20px;
+        margin-top: 20px;
+        margin-bottom: 10px;
+        text-align: center;
+    }
+    .dashboard-description {
+        font-size: 14px;
+        color: #000000;
+        margin-top: 10px
     }
     .dashboard-last-updated {
         font-size: 13px;

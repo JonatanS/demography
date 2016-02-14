@@ -1,0 +1,15 @@
+<div class="dashboard-entry" darken-on-hover ui-sref="dashboard({ userId: user._id, datasetId: dashboard.dataset._id, dashboardId: dashboard._id })">
+    <div class="dashboard-header">
+        <h2 class="dashboard-title">{{dashboard.title}}</h2>
+        <div class="dashboard-profile">
+            <img class="user-photo" ng-src="{{dashboard.user.picture}}">
+            <h5 class="user-name"><strong>{{dashboard.user.firstName}} {{dashboard.user.lastName}}</strong></h5>
+            <h6 class="last-updated">{{dashboard.lastUpdated | date: "MMM d, yyyy 'at' h:mm a" }}</h6>
+        </div>
+    </div>
+    <img class="dashboard-screenshot" ng-src="/{{dashboard.screenshot}}">
+    <!-- <h5 class="dashboard-tags" ng-repeat="tag in dashboard.tags"><strong>{{tag}}</strong></h5> -->
+    <h5 class="dashboard-description">{{dashboard.dataset.shortDescription}}</h5>
+    <button class="btn btn-warning fork-dashboard" ng-click="forkDashboard(dashboard)" ng-show="dashboard.isPublic && dashboard.dataset.isPublic"><i class="fa fa-code-fork"></i>Fork Dashboard</button>
+    <button class="btn btn-danger" ng-click="forkDataset(dashboard.dataset)" ng-show="dashboard.dataset.isPublic"><i class="fa fa-code-fork"></i>Fork Dataset</button>
+</div>
