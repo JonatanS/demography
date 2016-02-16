@@ -32,10 +32,6 @@ var schema = new mongoose.Schema({
     originalDataset: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'DataSet',
-    },
-    templateDashboard: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Dashboard'
     }
 });
 

@@ -20,8 +20,6 @@ app.service('ChartService', function (ChartUtilsService){
 
     //load data is called when a dashboard is initialized
     this.loadData = function(dataSet) {
-        if (!dataSet) return;
-
         myData = dataSet;
         ndx = crossfilter(dataSet);
     };
