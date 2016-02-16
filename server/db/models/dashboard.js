@@ -23,7 +23,7 @@ var schema = new mongoose.Schema({
     },
     screenshot: {
         type: String,
-        default: 'data/DashboardBackground.jpg'
+        default: 'data/DashboardBackground.png'
     },
     isPublic: {
     	type: Boolean, default: false

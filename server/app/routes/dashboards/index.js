@@ -25,13 +25,18 @@ var ensureAuthenticated = function (req, res, next) {
 
 // /api/dashboards/?filterCriteria=XYZ
 router.get("/", function (req, res, next) {
-	Dashboard.find(req.query).deepPopulate("user dataset originalDashboard originalDashboard.user")
+	return Dashboard.find(req.query).deepPopulate("user dataset originalDashboard originalDashboard.user")
 	.then(allDashboards => {
+        var respArr = allDashboards.filter(dashboard => dashboard.isPublic);
+        if(req.user) {
+            respArr.concat(allDashboards.filter(dashboard => dashboard.user._id.toString() === req.user._id.toString()));
+        }
 		//send the dashboard if it is public OR if it belongs to the user requesting it
-        res.status(200).send(allDashboards.filter(dashboard => dashboard.isPublic || dashboard.user._id.toString() === req.user._id.toString()))
+        res.status(200).send(respArr)
     })
 	.then(null, function(err) {
-        err.message = "Something went wrong when trying to access these dashboards";
+        console.error(err);
+        err.message = "^ Something went wrong when trying to access these dashboards";
         next(err);
     });
 });
