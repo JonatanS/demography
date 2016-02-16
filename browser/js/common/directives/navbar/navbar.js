@@ -6,17 +6,17 @@ app.directive('navbar', function($rootScope, AuthService, AUTH_EVENTS, $state) {
         templateUrl: 'js/common/directives/navbar/navbar.html',
         link: function(scope) {
 
-            scope.items = [{
-                label: ' Profile',
-                state: 'userDashboards',
-                class: 'glyphicon glyphicon-user',
-                auth: true
-            }, {
-                label: ' Stream',
-                state: 'stream',
-                class: 'glyphicon glyphicon-signal',
-                auth: true
-            }];
+            // scope.items = [{
+            //     label: ' Profile',
+            //     state: 'userDashboards',
+            //     class: 'glyphicon glyphicon-user',
+            //     auth: true
+            // }, {
+            //     label: ' Stream',
+            //     state: 'stream',
+            //     class: 'glyphicon glyphicon-signal',
+            //     auth: true
+            // }];
 
             scope.user = null;
 

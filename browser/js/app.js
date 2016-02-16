@@ -8,7 +8,7 @@ app.config(function($urlRouterProvider, $locationProvider) {
     $urlRouterProvider.otherwise('/');
     // Allow auth requests
     $urlRouterProvider.when('/auth/:provider', function() {
-      window.location.reload();
+        window.location.reload();
     });
 });
 
