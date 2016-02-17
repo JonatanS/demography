@@ -71,7 +71,9 @@ exports.convertToFlatJson = function(rawFile) {
 
 // Helper function to determine if the user in the search is the same as the user making the request
 exports.searchUserEqualsRequestUser = function(searchUser, requestUser) {
-    if (searchUser.toString() === requestUser._id.toString()) return true;
+    if (requestUser) {
+        if (searchUser.toString() === requestUser._id.toString()) return true;
+    }
     return false;
 };
 

@@ -44,7 +44,7 @@ router.get("/",ensureAuthenticated, function(req, res, next) {
 });
 
 // GET /api/datasets/:datasetId
-router.get("/:datasetId",ensureAuthenticated, function(req, res, next) {
+router.get("/:datasetId", function(req, res, next) {
     var returnDataObject, filePath, awsFileName;
     DataSet.findById(req.params.datasetId)
     .then(dataset => {

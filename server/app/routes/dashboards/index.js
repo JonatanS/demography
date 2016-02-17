@@ -56,7 +56,11 @@ router.get("/:id", function(req, res, next) {
                 });
             }
             else {
-                if (dashboard.isPublic || dashboard.user._id.toString() === req.user._id.toString()){
+                var giveAccess = false;
+                if (req.user) {
+                     if(dashboard.user._id.toString() === req.user._id.toString()) giveAccess = true;
+                }
+                if (dashboard.isPublic || giveAccess){
                     dashboard.getWidgets()
                     .then(function(widgets){
                         var myDash = dashboard.toJSON();
@@ -68,7 +72,8 @@ router.get("/:id", function(req, res, next) {
             }
         })
 		.then(null, function(err) {
-            err.message = "Something went wrong when trying to access this dashboard";
+            console.error(err);
+            err.message = "^ Something went wrong when trying to access this dashboard";
             next(err);
         });
 });
