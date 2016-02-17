@@ -1,5 +1,6 @@
 # Dash JS
-*Dash JS is a data visualization web application that facilitates the creation of interactive dashboards of dynamic, responsive charts
+*Dash JS is a data visualization web application that facilitates the creation of interactive dashboards of dynamic, responsive charts*
+
 ![dashjsscreenshot](https://cloud.githubusercontent.com/assets/3217286/13114592/1a82d08c-d562-11e5-9a62-1bf2be3b5744.png)
 
 Inspired by the desire to quickly and easily create compelling data visualizations, Dash JS empowers its users to derive meaning from their data. Even non-technical users will find our light-weight dashboard interface to be simple and intuitive, reducing the barrier to entry for data analysis
