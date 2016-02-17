@@ -31,6 +31,7 @@ app.config(function ($stateProvider) {
 
 //https://github.com/ManifestWebDesign/angular-gridster/blob/master/demo/dashboard/script.js
 app.controller('DashboardCtrl', function (currentDataset, currentDashboard, loggedInUser, $scope, $timeout, $uibModal, DatasetFactory, DashboardFactory, WidgetFactory, $stateParams, $rootScope, ChartService){
+
     $scope.dashboard = currentDashboard;
     $scope.dataset = currentDataset;  //dont want to expose this
 
@@ -105,11 +106,22 @@ app.controller('DashboardCtrl', function (currentDataset, currentDashboard, logg
         });
     };
 
+    var configureViewOnlyMode = function(){
+        $scope.gridsterOptions.resizable.enabled = false;
+        $scope.gridsterOptions.draggable.enabled = false;
+        $scope.viewOnlyMode = true;
+    }
+
     // $scope.$on('gridster-resized', function(sizes, gridster) {
     // // sizes[0] = width
     // // sizes[1] = height
     // // gridster.
     // })
-    // debugger;
+
+    $scope.viewOnlyMode = false;
+    if(!loggedInUser) {
+        configureViewOnlyMode()
+    };
+
     ChartService.loadData(currentDataset.jsonData)
 });
