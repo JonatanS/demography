@@ -117,9 +117,9 @@ app.controller('DashboardCtrl', function (currentDataset, currentDashboard, logg
     // // sizes[1] = height
     // // gridster.
     // })
-
+    debugger;
     $scope.viewOnlyMode = false;
-    if(!loggedInUser) {
+    if($scope.dashboard.user !== loggedInUser) {
         configureViewOnlyMode()
     };
 
