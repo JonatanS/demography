@@ -21,6 +21,11 @@ var filterFloat = function(value) {
     return undefined; //<--- NaN !== NaN is true, needed to change this to a falsey value
 }
 
+// Helper function to construct a file name
+exports.getFileName = function(userId, datasetId) {
+    return 'user:' + userId + '-dataset:' + datasetId + '.json';
+}
+
 // Helper function to construct a file path
 exports.getFilePath = function(userId, datasetId) {
     return uploadFolderPath + '/user:' + userId + '-dataset:' + datasetId + '.json';
@@ -84,9 +89,9 @@ var client = s3.createClient({
     }
 });
 
-exports.uploadFileToS3 = function(fileName) {
+exports.uploadFileToS3 = function(filePath, fileName) {
     var params = {
-        localFile: fileName,
+        localFile: filePath,
         s3Params: {
             Bucket: "dashjsio",
             Key: fileName
@@ -108,9 +113,9 @@ exports.uploadFileToS3 = function(fileName) {
     });
 };
 
-exports.getFileFromS3 = function(fileName) {
+exports.getFileFromS3 = function(filePath, fileName) {
     var params = {
-        localFile: fileName,
+        localFile: filePath,
         s3Params: {
             Bucket: "dashjsio",
             Key: fileName
