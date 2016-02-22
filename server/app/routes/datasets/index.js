@@ -73,10 +73,11 @@ router.get('/:datasetId', function(req, res, next) {
         return fsp.readFile(newFilePath, { encoding: 'utf8' })
     })
     .then(rawFile => {
-        // Convert csv file to a json object if needed
-        var dataArray = JSON.parse(rawFile);
         // Add the json as a property of the return object, so it an be sent with the metadata
+        var dataArray = JSON.parse(rawFile);
         returnDataObject.jsonData = dataArray;
+        // Remove temp file and return the retrieved dataset
+        fsp.unlink(newFilePath);
         res.status(200).json(returnDataObject);
     })
     .then(null, function(err) {

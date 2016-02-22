@@ -105,6 +105,7 @@ app.controller('DashboardCtrl', function(currentDataset, currentDashboard, logge
     };
 
     var configureViewOnlyMode = function() {
+        console.log("configureViewOnlyMode ran");
         $scope.gridsterOptions.resizable.enabled = false;
         $scope.gridsterOptions.draggable.enabled = false;
         $scope.viewOnlyMode = true;
@@ -117,8 +118,9 @@ app.controller('DashboardCtrl', function(currentDataset, currentDashboard, logge
     // })
 
     $scope.viewOnlyMode = false;
-    if ($scope.dashboard.user !== loggedInUser) {
-        configureViewOnlyMode()
+
+    if ($scope.dashboard.user._id !== loggedInUser._id) {
+        configureViewOnlyMode();
     };
 
     ChartService.loadData(currentDataset.jsonData)

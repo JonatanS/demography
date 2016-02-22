@@ -29,7 +29,7 @@ router.post("/", function(req, res, next) {
             origFileName = data[0].filename;
             newFileName = 'dataset:' + req.body.datasetId + '-dashboard:' + req.body.dashboardId + '.png';
             //post screenshot to AWS:
-            return routeUtility.uploadFileToS3(screenshotPathOnFS + '/' + origFileName, newFileName)
+            return routeUtility.uploadFileToS3(screenshotPathOnFS + '/' + origFileName, newFileName);
         })
         .then(savedToAws => {
             fsp.unlink(screenshotPathOnFS + '/' + origFileName);
@@ -39,11 +39,10 @@ router.post("/", function(req, res, next) {
             //return Dashboard.findByIdAndUpdate(req.body.dashboardId, { screenshot: newFileName }, { new: true });
         })
         .then(updatedDashboard => {
-            console.log('Screenshot successful on AWS!')
-            res.status(200).send(updatedDashboard)
+            console.log('Screenshot successfully saved to S3!');
+            res.status(200).send(updatedDashboard);
         })
         .then(null, function (err) {
-            console.log("SHIT WENT WRONG POSTING A SCREENSHOT:");
             console.log(err);
             console.log(err.stack);
             next(err);
