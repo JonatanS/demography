@@ -1,4 +1,5 @@
 'use strict';
+
 var session = require('express-session');
 var MongoStore = require('connect-mongo')(session);
 var _ = require('lodash');

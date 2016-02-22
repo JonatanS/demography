@@ -1,3 +1,5 @@
+'use strict';
+
 var authConfig = require('../../secrets.js');
 //process.env.TOKEN_SECRET = "qE19G2Lnmf8EXE60gdztw8ajMHfTc0S9"; // BOBBY NOTE: This looks like a dupe with the token listed below
 module.exports = {

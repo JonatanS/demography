@@ -1,3 +1,5 @@
+'use strict';
+
 var mongoose = require('mongoose');
 
 var widgetTypes = ['text', 'graph', 'other'];

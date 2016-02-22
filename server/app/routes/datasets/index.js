@@ -1,22 +1,24 @@
 'use strict';
-var router = require('express').Router();
-module.exports = router;
-var mongoose = require('mongoose');
-var DataSet = mongoose.model('DataSet');
-var User = mongoose.model('User');
-var _ = require('lodash');
-var fsp = require('fs-promise');
-var path = require('path');
-//var flatten = require('flat');
-var routeUtility = require('../route-utilities.js');
-var uploadFolderPath = path.join(__dirname + '/../../../db/upload-files');
-var phantomSecret = require('../../../env/index.js').PHANTOM_SECRET;
 
-var phantomAuthenticated = function(req){
+const router = require('express').Router();
+module.exports = router;
+const mongoose = require('mongoose');
+const DataSet = mongoose.model('DataSet');
+const User = mongoose.model('User');
+const _ = require('lodash');
+const fsp = require('fs-promise');
+const path = require('path');
+//const flatten = require('flat');
+const routeUtility = require('../route-utilities.js');
+
+const uploadFolderPath = path.join(__dirname + '/../../../db/upload-files');
+const phantomSecret = require('../../../env/index.js').PHANTOM_SECRET;
+
+const phantomAuthenticated = function(req){
     return req.phantom === phantomSecret;
 }
 
-var ensureAuthenticated = function (req, res, next) {
+const ensureAuthenticated = function (req, res, next) {
     if (req.isAuthenticated() || phantomAuthenticated(req)) {
         next();
     } else {
@@ -28,12 +30,12 @@ var ensureAuthenticated = function (req, res, next) {
 // Route to retrieve all datasets
 // This sends metadata only. The GET /:datasetId will need to be used to access the actual data
 // GET /api/datasets/
-router.get("/",ensureAuthenticated, function(req, res, next) {
+router.get("/", ensureAuthenticated, function(req, res, next) {
     // If a specific user data is requested by a different user, only send the public data
     var queryObject = req.query;
     queryObject.isPublic = true;
 
-    // If a specific user data is requested by the same user, send it back
+    // If a specific user data is requested by the same user, send the private ones back too
     if (queryObject.user && routeUtility.searchUserEqualsRequestUser(queryObject.user, req.user)) delete queryObject.isPublic;
     DataSet.find(queryObject).populate("originalDataset")
     .then(datasets => res.status(200).json(datasets))
@@ -59,7 +61,7 @@ router.get("/:datasetId", function(req, res, next) {
         returnDataObject = dataset.toJSON();
 
         // Retrieve the file so it can be sent back with the metadata
-        filePath = routeUtility.getFilePath(dataset.user, dataset._id, dataset.fileType);
+        filePath = routeUtility.getFilePath(dataset.user, dataset._id);
         awsFileName = 'user:' + dataset.user + '-dataset:' + dataset._id + '.json';
         routeUtility.getFileFromS3(filePath, awsFileName)
         .then(awsResponse =>{
@@ -81,8 +83,8 @@ router.get("/:datasetId", function(req, res, next) {
 
 // multer is middleware used to parse the file that is uploaded through the POST request
 // This route should come last, so other routes are not affected by this middleware
-var multer = require('multer');
-var upload = multer({
+const multer = require('multer');
+const upload = multer({
     dest: uploadFolderPath
 });
 
@@ -91,7 +93,9 @@ var upload = multer({
 router.post('/uploadFile',ensureAuthenticated, upload.single('file'), function(req, res, next) {
     var metaData = req.body,
     originalFilePath = req.file.path,
-    newFilePath, awsFileName, returnDataObject, dataArray;
+    newFilePath,
+    returnDataObject,
+    dataArray;
 
     metaData.fileType = "application/json";
 
@@ -102,10 +106,9 @@ router.post('/uploadFile',ensureAuthenticated, upload.single('file'), function(r
 
     DataSet.create(metaData)
     .then(dataset => {
-        // Save the metadata on the return object
+        // Save the metadata as the return object and rename the file saved to the filesystem
         returnDataObject = dataset.toJSON();
-        newFilePath = routeUtility.getFilePath(dataset.user, dataset._id, "application/json");
-        awsFileName = 'user:' + dataset.user + '-dataset:' + dataset._id + '.json';
+        newFilePath = routeUtility.getFilePath(dataset.user, dataset._id);
         return fsp.readFile(originalFilePath, { encoding: 'utf8' });
     })
     .then(rawFile => {
@@ -114,15 +117,17 @@ router.post('/uploadFile',ensureAuthenticated, upload.single('file'), function(r
         // Add the json as a property of the return object, so it an be sent with the metadata
         returnDataObject.jsonData = dataArray;
 
-        //save JSON file to FS
-        fsp.writeFile(newFilePath, JSON.stringify(dataArray));
+        // Save file to FS
+        return fsp.writeFile(newFilePath, JSON.stringify(dataArray));
     })
-    .then(savedToFS =>{
-        return routeUtility.uploadFileToS3(newFilePath, awsFileName)
+    .then(fsResponse => {
+        // Save file to AWS
+        return routeUtility.uploadFileToS3(newFilePath);
     })
-    .then(savedToAws => {
-        //remove temp file:
+    .then(awsResponse => {
+        // Remove temp files and return the saved dataset
         fsp.unlink(originalFilePath);
+        fsp.unlink(newFilePath);
         res.status(201).json(returnDataObject);
     })
     .then(null, function(err) {
@@ -134,10 +139,13 @@ router.post('/uploadFile',ensureAuthenticated, upload.single('file'), function(r
 // Route to update an existing dataset in MongoDB and overwrite the saved csv file in the filesystem
 // POST /api/datasets/:datasetId/updateDataset
 router.post('/:datasetId/replaceDataset',ensureAuthenticated, upload.single('file'), function(req, res, next) {
-    var metaData = req.body;
-    var originalFilePath = req.file.path;
-    var datasetId = req.params.datasetId;
-    var newFilePath, awsFileName,returnDataObject, dataArray;
+    var metaData = req.body,
+    originalFilePath = req.file.path,
+    datasetId = req.params.datasetId,
+    newFilePath,
+    awsFileName,
+    returnDataObject,
+    dataArray;
 
     metaData.fileType = "application/json";
 
@@ -154,7 +162,7 @@ router.post('/:datasetId/replaceDataset',ensureAuthenticated, upload.single('fil
     .then(updatedDataset => {
         // Save the metadata on the return object
         returnDataObject = updatedDataset.toJSON();
-        newFilePath = routeUtility.getFilePath(updatedDataset.user, updatedDataset._id, "application/json");
+        newFilePath = routeUtility.getFilePath(updatedDataset.user, updatedDataset._id);
         awsFileName = 'user:' + updatedDataset.user + '-dataset:' + updatedDataset._id + '.json';
         return fsp.readFile(originalFilePath, { encoding: 'utf8' });
     })
@@ -191,7 +199,7 @@ router.delete("/:datasetId",ensureAuthenticated, function(req, res, next) {
         returnData = dataset;
         // Throw an error if a different user tries to delete dataset
         if (!routeUtility.searchUserEqualsRequestUser(dataset.user, req.user)) res.status(401).send("You are not authorized to access this dataset");
-        filePath = routeUtility.getFilePath(dataset.user, dataset._id, dataset.fileType);
+        filePath = routeUtility.getFilePath(dataset.user, dataset._id);
         awsFileName = 'user:' + dataset.user + '-dataset:' + dataset._id + '.json';
         return dataset.remove();
     })
@@ -225,7 +233,7 @@ router.post("/:datasetId/fork",ensureAuthenticated, function(req, res, next) {
         if (!datasetToFork.isPublic) res.status(401).send("You are not authorized to access this dataset");
 
         // Save the original file path
-        originalFilePath = routeUtility.getFilePath(datasetToFork.user, datasetToFork._id, "application/json");
+        originalFilePath = routeUtility.getFilePath(datasetToFork.user, datasetToFork._id);
 
         // Create a "fork" ofr the dataset metadata and assign it to the req user
         datasetToFork = datasetToFork.toJSON();
@@ -241,7 +249,7 @@ router.post("/:datasetId/fork",ensureAuthenticated, function(req, res, next) {
         // Save the metadata on the return object
         returnDataObject = forkedDatasetMetadata.toJSON();
         // Save the forked file path
-        forkedFilePath = routeUtility.getFilePath(forkedDatasetMetadata.user, forkedDatasetMetadata._id, "application/json");
+        forkedFilePath = routeUtility.getFilePath(forkedDatasetMetadata.user, forkedDatasetMetadata._id);
         return fsp.readFile(originalFilePath, { encoding: 'utf8' });
     })
     .then(rawFile => {
