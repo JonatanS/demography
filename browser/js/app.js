@@ -1,5 +1,6 @@
 'use strict';
-window.app = angular.module('Dash.js', ['fsaPreBuilt', 'ui.router', 'ui.bootstrap', 'ngAnimate', 'validation.match', 'gridster', 'ngFileUpload', 'ngclipboard', 'ui.grid', 'oi.select']);
+
+window.app = angular.module('dashJs', ['fsaPreBuilt', 'ui.router', 'ui.bootstrap', 'ngAnimate', 'validation.match', 'gridster', 'ngFileUpload', 'ngclipboard', 'ui.grid', 'oi.select']);
 
 app.config(function($urlRouterProvider, $locationProvider) {
     // This turns off hashbang urls (/#about) and changes it to something normal (/about)

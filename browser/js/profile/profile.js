@@ -133,6 +133,7 @@ app.controller('ProfileCtrl', function($scope, $state, $uibModal, $timeout, logg
                 return userDashboard._id === deletedDashboard._id;
             });
             $scope.userDashboards.splice(userDashboardIndex, 1);
+            $state.go('userDashboards'); // BOBBY NOTE: Without this, angular-ui-router triggers an unwanted state change
         })
         .then(null, console.error);
     }

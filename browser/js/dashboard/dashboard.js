@@ -33,7 +33,7 @@ app.config(function($stateProvider) {
 app.controller('DashboardCtrl', function(currentDataset, currentDashboard, loggedInUser, $scope, $timeout, $uibModal, DatasetFactory, DashboardFactory, WidgetFactory, $stateParams, $rootScope, ChartService) {
 
     $scope.dashboard = currentDashboard;
-    $scope.dataset = currentDataset; //dont want to expose this
+    $scope.dataset = currentDataset;
 
     if ($scope.dashboard.widgets) {
         $scope.dashboard.nextWidgetId = $scope.dashboard.widgets.length ?
@@ -44,19 +44,19 @@ app.controller('DashboardCtrl', function(currentDataset, currentDashboard, logge
         $scope.dashboard.nextWidgetId = 0;
     }
 
-    //set name for display
+    // Set name for display
     if (currentDashboard.user.firstName && currentDashboard.user.lastName) {
         $scope.dashboard.user.name = currentDashboard.user.firstName + ' ' + currentDashboard.user.lastName;
     } else $scope.dashboard.user.name = currentDashboard.user.email;
 
 
-    //tons of options: https://github.com/ManifestWebDesign/angular-gridster
+    // Tons of options: https://github.com/ManifestWebDesign/angular-gridster
     $scope.gridsterOptions = {
-        margins: [12, 12], //spacing between widgets
+        margins: [12, 12], // spacing between widgets
         columns: 12, // min widget size
         draggable: {
             handle: '.box-header' // optional if you only want a specific element to be the drag handle
-                //enabled: true
+                // enabled: true
         },
         rowHeight: 'match',
         resizable: {
@@ -70,7 +70,7 @@ app.controller('DashboardCtrl', function(currentDataset, currentDashboard, logge
 
         mobileBreakPoint: 600, // if the screen is not wider that this, remove the grid layout and stack the items
         mobileModeEnabled: true, // whether or not to toggle mobile mode when screen width is less than mobileBreakPoint
-    };
+    }
 
     $scope.$on('$destroy', function() {
         if (!!$scope.dashboard.widgets.length) {
@@ -89,7 +89,7 @@ app.controller('DashboardCtrl', function(currentDataset, currentDashboard, logge
             sizeX: 4,
             sizeY: 4,
             chartObject: {}
-        };
+        }
 
         $scope.dashboard.widgets.push(newWidget);
         $scope.dashboard.nextWidgetId = $scope.dashboard.nextWidgetId + 1;
@@ -102,7 +102,7 @@ app.controller('DashboardCtrl', function(currentDataset, currentDashboard, logge
                     }
                 }
             });
-    };
+    }
 
     var configureViewOnlyMode = function() {
         console.log("configureViewOnlyMode ran");
@@ -121,7 +121,7 @@ app.controller('DashboardCtrl', function(currentDataset, currentDashboard, logge
 
     if ($scope.dashboard.user._id !== loggedInUser._id) {
         configureViewOnlyMode();
-    };
+    }
 
-    ChartService.loadData(currentDataset.jsonData)
+    ChartService.loadData(currentDataset.jsonData);
 });

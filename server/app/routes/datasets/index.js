@@ -238,9 +238,9 @@ router.post('/:datasetId/replaceDataset', ensureAuthenticated, upload.single('fi
 
 // Route to fork a dataset to another user's account
 // POST /api/datasets/:datasetId/fork
-router.post("/:datasetId/fork",ensureAuthenticated, function(req, res, next) {
+router.post("/:datasetId/fork", ensureAuthenticated, function(req, res, next) {
     //When forking, make sure the user on the forked dataset is the current logged in user (not the creator of the dataset).
-    var clonedDataset = {},
+    var clonedDataset,
     datasetToFork,
     originalFilePath,
     originalFileName,
@@ -258,14 +258,13 @@ router.post("/:datasetId/fork",ensureAuthenticated, function(req, res, next) {
         originalFilePath = routeUtility.getFilePath(datasetToFork.user, datasetToFork._id);
         originalFileName = routeUtility.getFileName(datasetToFork.user, datasetToFork._id);
 
-        // Create a "fork" of the dataset metadata and assign it to the req user
+        // Create a "cleansed" copy of the dataset metadata and assign it to the req user
         datasetToFork = datasetToFork.toJSON();
-        Object.keys(datasetToFork).forEach(prop => {
-            if (datasetToFork.hasOwnProperty(prop) && prop !== "_id" && prop !== "__v") {
-                clonedDataset[prop] = datasetToFork[prop];
-            };
-        })
+        clonedDataset = Object.assign({}, datasetToFork);
+        delete clonedDataset._id;
+        delete clonedDataset.__v;
         clonedDataset.user = req.user._id;
+
         return DataSet.create(clonedDataset);
     })
     .then(forkedDatasetMetadata => {
