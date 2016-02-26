@@ -1,4 +1,5 @@
 'use strict';
+
 var path = require('path');
 var chalk = require('chalk');
 var util = require('util');

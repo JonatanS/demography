@@ -1,3 +1,5 @@
+'use strict';
+
 var mongoose = require('mongoose');
 var deepPopulate = require('mongoose-deep-populate')(mongoose);
 var Widget = mongoose.model('Widget');

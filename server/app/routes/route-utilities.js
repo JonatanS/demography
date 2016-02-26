@@ -1,4 +1,5 @@
 'use strict';
+
 var _ = require('lodash');
 var Promise = require('bluebird');
 var fsp = require('fs-promise');
@@ -20,10 +21,14 @@ var filterFloat = function(value) {
     return undefined; //<--- NaN !== NaN is true, needed to change this to a falsey value
 }
 
+// Helper function to construct a file name
+exports.getFileName = function(userId, datasetId) {
+    return 'user:' + userId + '-dataset:' + datasetId + '.json';
+}
+
 // Helper function to construct a file path
-exports.getFilePath = function(userId, datasetId, fileType) {
-    if (fileType === "text/csv") return uploadFolderPath + '/user:' + userId + '-dataset:' + datasetId + '.csv';
-    else if (fileType === "application/json") return uploadFolderPath + '/user:' + userId + '-dataset:' + datasetId + '.json';
+exports.getFilePath = function(userId, datasetId) {
+    return uploadFolderPath + '/user:' + userId + '-dataset:' + datasetId + '.json';
 }
 
 // Helper function to convert csv to json
@@ -31,12 +36,12 @@ exports.convertCsvToJson = function(rawFile) {
     var fileStr = rawFile.toString();
     var rawDataArray = fileStr.split("\n").map(function(line, index) {
         return line.split(",").map(function(cell) {
-            return cell.replace(/^\s+|\s+$/g, ''); //trim whitespace
+            return cell.replace(/^\s+|\s+$/g, ''); // Trim whitespace
         });
     });
     var headerArray = rawDataArray.shift();
 
-    //recursively remove empty rows:
+    // Recursively remove empty rows:
     var cleanCounter = 0;
     while (rawDataArray[rawDataArray.length - 1][0] === "") {
         rawDataArray.pop();
@@ -84,20 +89,21 @@ var client = s3.createClient({
     }
 });
 
-exports.uploadFileToS3 = function(fileToWrite, fileName) {
+exports.uploadFileToS3 = function(filePath, fileName) {
     var params = {
-        localFile: fileToWrite,
+        localFile: filePath,
         s3Params: {
-            Bucket: "dashjs",
-            Key: fileName //must end in .json
+            Bucket: "dashjsio",
+            Key: fileName
         }
     };
 
-    var uploader = client.uploadFile(params)
+    var uploader = client.uploadFile(params);
+
     return new Promise((resolve, reject) => {
         uploader.on('error', function(err) {
 
-            console.log("S3 upload failed")
+            console.log("S3 upload failed");
             console.error(err.stack);
             reject(err);
         });
@@ -107,12 +113,12 @@ exports.uploadFileToS3 = function(fileToWrite, fileName) {
     });
 };
 
-exports.getFileFromS3 = function(localFileToCreate,fileName) {
+exports.getFileFromS3 = function(filePath, fileName) {
     var params = {
-        localFile: localFileToCreate,
+        localFile: filePath,
         s3Params: {
-            Bucket: "dashjs",
-            Key: fileName //must end in .json
+            Bucket: "dashjsio",
+            Key: fileName
         }
     };
 
@@ -120,7 +126,7 @@ exports.getFileFromS3 = function(localFileToCreate,fileName) {
     return new Promise((resolve, reject) => {
         downloader.on('error', function(err) {
 
-            console.log("S3 download failed")
+            console.log("S3 download failed");
             console.error(err.stack);
             reject(err);
         });
@@ -131,9 +137,8 @@ exports.getFileFromS3 = function(localFileToCreate,fileName) {
 };
 
 exports.removeDatasetFromS3 = function(fileName) {
-    console.log("begin deleting from S3:", fileName)
     var params = {
-        Bucket: "dashjs",
+        Bucket: "dashjsio",
         Delete: {
             Objects:[{Key: fileName}]
         }

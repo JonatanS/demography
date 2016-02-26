@@ -3,7 +3,7 @@ app.factory('DashboardFactory', function ($http, $rootScope) {
 
         //save new dashboard upon creation
         create: function(dashboard) {
-           return $http.post('/api/dashboards',dashboard)
+           return $http.post('/api/dashboards', dashboard)
            .then(response => response.data)
            .then(null, console.error);
         },

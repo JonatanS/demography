@@ -124,7 +124,7 @@ app.controller('ProfileCtrl', function($scope, $state, $uibModal, $timeout, logg
             $state.go('dashboard', { userId: newDashboard.user, datasetId: newDashboard.dataset, dashboardId: newDashboard._id });
         })
         .then(null, console.error)
-    };
+    }
 
     $scope.removeDashboard = function(dashboard) {
         DashboardFactory.delete(dashboard)
@@ -133,13 +133,14 @@ app.controller('ProfileCtrl', function($scope, $state, $uibModal, $timeout, logg
                 return userDashboard._id === deletedDashboard._id;
             });
             $scope.userDashboards.splice(userDashboardIndex, 1);
+            $state.go('userDashboards'); // BOBBY NOTE: Without this, angular-ui-router triggers an unwanted state change
         })
         .then(null, console.error);
-    };
+    }
 
     $scope.apiKey = {
         show: false
-    };
+    }
 
     $scope.generateAPIkey = function() {
         UserFactory.generateToken(loggedInUser._id)
@@ -149,7 +150,7 @@ app.controller('ProfileCtrl', function($scope, $state, $uibModal, $timeout, logg
 
         })
         .then(null, console.error);
-    };
+    }
 
     $scope.resetToken = function(e) {
         $scope.apiKey.show = false;
@@ -161,10 +162,11 @@ app.controller('ProfileCtrl', function($scope, $state, $uibModal, $timeout, logg
         var changingIndex = $scope.userDashboards.findIndex(userDashboard => {
             return userDashboard._id === newDashboard._id;
         });
-        $scope.userDashboards[changingIndex].screenshot = $scope.userDashboards[changingIndex].screenshot + '?x=' + Math.floor(Math.random() * 1000)
-        // $scope.$off("screenshotUpdated", listenerFunc)
+
+        $scope.userDashboards[changingIndex].screenshot = $scope.userDashboards[changingIndex].screenshot + '?x=' + Math.floor(Math.random() * 1000);
+        // $scope.$off("screenshotUpdated", listenerFunc);
     }
 
-    $scope.$on("screenshotUpdated", listenerFunc)
+    $scope.$on("screenshotUpdated", listenerFunc);
 
 });

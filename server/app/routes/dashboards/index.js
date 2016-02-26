@@ -73,7 +73,7 @@ router.get("/:id", function(req, res, next) {
         })
 		.then(null, function(err) {
             console.error(err);
-            err.message = "^ Something went wrong when trying to access this dashboard";
+            err.message = "Something went wrong when trying to access this dashboard";
             next(err);
         });
 });
@@ -81,8 +81,6 @@ router.get("/:id", function(req, res, next) {
 // Route to create a new dashboard in MongoDB
 // POST /api/dashboards
 router.post("/", ensureAuthenticated, function(req, res, next) {
-    //if forking, make sure the user on the forked dashboard is the current logged in user (not the creator of the dashboard). If creating a brand new dashboard, this line changes nothing.
-    req.body.user = req.user
     Dashboard.create(req.body)
     .then(createdDashboard => res.status(201).send(createdDashboard))
     .then(null, function(err) {
