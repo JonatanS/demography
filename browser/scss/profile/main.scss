@@ -21,6 +21,16 @@
     }
 }
 
+#api-access {
+    a:hover {
+        cursor: pointer;
+    }
+}
+
+#apiKeyDisplay {
+    width: 196px;
+}
+
 @import "profile-datasets";
 @import "profile-dashboards";
 @import "profile-datasets.settings";
