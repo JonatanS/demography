@@ -39,7 +39,7 @@ var schema = new mongoose.Schema({
 });
 
 schema.pre('save', function (next) {
-    this.lastUpdated = Date.now()
+    this.lastUpdated = Date.now();
     next();
 });
 
@@ -52,12 +52,9 @@ schema.pre('remove', function (next) {
 });
 
 schema.methods.getWidgets = function getWidgets() {
-    return Widget.find({dashboard: this._id})
-    .then(function(widgets){
-        return widgets;
-    });
+    return Widget.find({dashboard: this._id});
 };
 
-schema.plugin(deepPopulate)
+schema.plugin(deepPopulate);
 
 mongoose.model('Dashboard', schema);

@@ -77,7 +77,7 @@ router.get('/:datasetId', function(req, res, next) {
         var dataArray = JSON.parse(rawFile);
         returnDataObject.jsonData = dataArray;
         // Remove temp file and return the retrieved dataset
-        fsp.unlink(newFilePath);
+        // fsp.unlink(newFilePath);
         res.status(200).json(returnDataObject);
     })
     .then(null, function(err) {
@@ -165,7 +165,7 @@ router.post('/uploadFile', ensureAuthenticated, upload.single('file'), function(
     .then(awsResponse => {
         // Remove temp files and return the saved dataset
         fsp.unlink(originalFilePath);
-        fsp.unlink(newFilePath);
+        // fsp.unlink(newFilePath);
         res.status(201).json(returnDataObject);
     })
     .then(null, function(err) {
@@ -226,8 +226,8 @@ router.post('/:datasetId/replaceDataset', ensureAuthenticated, upload.single('fi
     })
     .then(awsWriteResponse => {
         // Remove temp files and return the saved dataset
-        fsp.unlink(originalFilePath);
-        fsp.unlink(updatedFilePath);
+        // fsp.unlink(originalFilePath);
+        // fsp.unlink(updatedFilePath);
         res.status(201).json(returnDataObject);
     })
     .then(null, function(err) {
@@ -294,8 +294,9 @@ router.post("/:datasetId/fork", ensureAuthenticated, function(req, res, next) {
     })
     .then(awsWriteResponse => {
         // Remove temp files and return the saved dataset
-        fsp.unlink(originalFilePath);
-        fsp.unlink(forkedFilePath);
+        // BOBBY NOTE: unlinking the files appears to break the readFile part of the route, despite it happening after the resolve
+        // fsp.unlink(originalFilePath);
+        // fsp.unlink(forkedFilePath);
         res.status(201).json(returnDataObject);
     })
     .then(null, function(err) {

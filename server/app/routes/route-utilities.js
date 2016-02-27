@@ -122,7 +122,7 @@ exports.getFileFromS3 = function(filePath, fileName) {
         }
     };
 
-    var downloader = client.downloadFile(params)
+    var downloader = client.downloadFile(params);
     return new Promise((resolve, reject) => {
         downloader.on('error', function(err) {
 
